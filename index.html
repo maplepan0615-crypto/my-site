@@ -1009,46 +1009,19 @@ async function generateLetter() {
   document.getElementById('letter-body').innerHTML = '<div class="letter-loading">手紙を書いています<span class="loading-dots"></span></div>';
   document.getElementById('answers-recap').innerHTML = '';
 
-  const qa = questions.map((q, i) => `Q: ${q.text}\nA: ${answers[i] || '（回答なし）'}`).join('\n\n');
-
-  const prompt = `あなたは「死後の世界から今の自分自身へ手紙を書く」という体験の代筆者です。
-
-ユーザーが答えた質問と回答：
-${qa}
-
-この情報をもとに、「死後の自分から今の自分への手紙」を日本語で書いてください。
-
-手紙の条件：
-- 「あなたへ」で書き始める
-- 死後の自分として、穏やかで温かみのある語り口
-- 回答内容を具体的に織り込む（特に大切な人、夢、後悔について）
-- 生きることへの肯定感が自然ににじみ出るように
-- 説教くさくならず、あくまで優しく
-- 550〜650文字程度
-- 手紙の文章のみ返してください`;
-
   try {
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
+    const res = await fetch("/api/generate-letter", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": localStorage.getItem('anthropic_api_key') || '',
-        "anthropic-version": "2023-06-01"
-      },
-      body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 1000,
-        messages: [{ role: "user", content: prompt }]
-      })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ answers, questions })
     });
     
     if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(`API Error: ${res.status} - ${JSON.stringify(errorData)}`);
+      throw new Error(`API Error: ${res.status}`);
     }
     
     const data = await res.json();
-    const text = data.content?.map(c => c.text || '').join('') || '手紙を生成できませんでした。';
+    const text = data.letter || '手紙を生成できませんでした。';
     document.getElementById('letter-body').textContent = text;
 
     // answers recap
@@ -1060,8 +1033,8 @@ ${qa}
           <div class="recap-a">${answers[i]}</div>
         </div>` : '').join('');
   } catch (e) {
-    document.getElementById('letter-body').textContent = `接続エラーが発生しました: ${e.message}\n\nAPIキーが設定されていない可能性があります。ブラウザのコンソール（F12）を開いて、以下を実行してください：\n\nlocalStorage.setItem('anthropic_api_key', 'your-api-key-here');`;
-    console.error('Letter generation error:', e);
+    console.error('Error generating letter:', e);
+    document.getElementById('letter-body').textContent = '接続エラーが発生しました。もう一度お試しください。';
   }
   scrollTo('#letter-section');
 }
@@ -1097,18 +1070,10 @@ function calcStats() {
 async function generateStatsMessage(age, rem, days) {
   document.getElementById('stats-message').innerHTML = '<div class="letter-loading">言葉を探しています<span class="loading-dots"></span></div>';
   try {
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
+    const res = await fetch("/api/generate-stats", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": localStorage.getItem('anthropic_api_key') || '',
-        "anthropic-version": "2023-06-01"
-      },
-      body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 500,
-        messages: [{ role: "user", content: `${age}歳の人が、平均寿命から計算した残り時間（約${rem}年、${days.toLocaleString()}日）を知りました。数字という形で「有限」を目にした人に向けて、詩的で温かい言葉を日本語で書いてください。押しつけがましくなく、ただそっと背中を押すような200〜240文字の文章で。` }]
-      })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ age, rem, days })
     });
     
     if (!res.ok) {
@@ -1116,10 +1081,10 @@ async function generateStatsMessage(age, rem, days) {
     }
     
     const data = await res.json();
-    document.getElementById('stats-message').textContent = data.content?.map(c => c.text || '').join('') || '';
+    document.getElementById('stats-message').textContent = data.message || '';
   } catch (e) {
-    document.getElementById('stats-message').textContent = 'メッセージを生成できませんでした。';
-    console.error('Stats message error:', e);
+    console.error('Error generating stats message:', e);
+    document.getElementById('stats-message').textContent = '';
   }
 }
 
