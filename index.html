@@ -295,7 +295,11 @@ nav {
   cursor: pointer;
   transition: all var(--transition);
 }
-.btn-back:hover { border-color: var(--ink-muted); color: var(--ink); }
+.btn-back:hover:not(:disabled) { border-color: var(--ink-muted); color: var(--ink); }
+.btn-back:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 .btn-next {
   flex: 1;
   padding: 12px;
@@ -771,7 +775,7 @@ footer {
           <div class="q-hint" id="q-hint"></div>
           <textarea class="q-textarea" id="q-textarea" placeholder="思ったことをそのままどうぞ"></textarea>
           <div class="q-nav">
-            <button class="btn-back" onclick="prevQuestion()">← 戻る</button>
+            <button class="btn-back" onclick="prevQuestion()" id="btn-back" disabled>← 戻る</button>
             <button class="btn-next" onclick="nextQuestion()" id="q-btn-next">次へ</button>
           </div>
         </div>
@@ -963,6 +967,11 @@ function renderQuestion() {
   document.getElementById('q-hint').textContent = q.hint;
   document.getElementById('q-textarea').value = answers[currentQ];
   document.getElementById('progress-bar').style.width = `${((currentQ + 1) / questions.length) * 100}%`;
+  
+  // 戻るボタンを最初の質問で無効化
+  const backBtn = document.getElementById('btn-back');
+  backBtn.disabled = currentQ === 0;
+  
   const isLast = currentQ === questions.length - 1;
   document.getElementById('q-btn-next').textContent = isLast ? '手紙を受け取る ✦' : '次へ';
 }
@@ -1021,13 +1030,23 @@ ${qa}
   try {
     const res = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": localStorage.getItem('anthropic_api_key') || '',
+        "anthropic-version": "2023-06-01"
+      },
       body: JSON.stringify({
         model: "claude-sonnet-4-20250514",
         max_tokens: 1000,
         messages: [{ role: "user", content: prompt }]
       })
     });
+    
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(`API Error: ${res.status} - ${JSON.stringify(errorData)}`);
+    }
+    
     const data = await res.json();
     const text = data.content?.map(c => c.text || '').join('') || '手紙を生成できませんでした。';
     document.getElementById('letter-body').textContent = text;
@@ -1041,7 +1060,8 @@ ${qa}
           <div class="recap-a">${answers[i]}</div>
         </div>` : '').join('');
   } catch (e) {
-    document.getElementById('letter-body').textContent = '接続エラーが発生しました。もう一度お試しください。';
+    document.getElementById('letter-body').textContent = `接続エラーが発生しました: ${e.message}\n\nAPIキーが設定されていない可能性があります。ブラウザのコンソール（F12）を開いて、以下を実行してください：\n\nlocalStorage.setItem('anthropic_api_key', 'your-api-key-here');`;
+    console.error('Letter generation error:', e);
   }
   scrollTo('#letter-section');
 }
@@ -1079,17 +1099,27 @@ async function generateStatsMessage(age, rem, days) {
   try {
     const res = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": localStorage.getItem('anthropic_api_key') || '',
+        "anthropic-version": "2023-06-01"
+      },
       body: JSON.stringify({
         model: "claude-sonnet-4-20250514",
         max_tokens: 500,
         messages: [{ role: "user", content: `${age}歳の人が、平均寿命から計算した残り時間（約${rem}年、${days.toLocaleString()}日）を知りました。数字という形で「有限」を目にした人に向けて、詩的で温かい言葉を日本語で書いてください。押しつけがましくなく、ただそっと背中を押すような200〜240文字の文章で。` }]
       })
     });
+    
+    if (!res.ok) {
+      throw new Error(`API Error: ${res.status}`);
+    }
+    
     const data = await res.json();
     document.getElementById('stats-message').textContent = data.content?.map(c => c.text || '').join('') || '';
   } catch (e) {
-    document.getElementById('stats-message').textContent = '';
+    document.getElementById('stats-message').textContent = 'メッセージを生成できませんでした。';
+    console.error('Stats message error:', e);
   }
 }
 
