@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>もしも、死んだとしたら — 今この瞬間への手紙</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1714;
+  --ink-soft: #4a4540;
+  --ink-muted: #8a8480;
+  --ink-faint: #c5c0bb;
+  --paper: #f7f4ef;
+  --paper-warm: #ede8e1;
+  --paper-deep: #e0d9d0;
+  --gold: #b8922a;
+  --gold-light: #d4b060;
+  --red: #8b3a3a;
+  --teal: #2d6b6b;
+  --serif: 'Shippori Mincho', 'Georgia', serif;
+  --sans: 'Zen Kaku Gothic New', 'Hiragino Kaku Gothic ProN', sans-serif;
+  --radius: 4px;
+  --radius-lg: 12px;
+  --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--sans);
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ─── Background texture ─── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(ellipse at 20% 20%, rgba(184,146,42,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 80%, rgba(45,107,107,0.05) 0%, transparent 60%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container {
+  position: relative;
+  z-index: 1;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* ─── NAV ─── */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(247, 244, 239, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--paper-deep);
+}
+.nav-inner {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nav-logo {
+  font-family: var(--serif);
+  font-size: 15px;
+  color: var(--ink);
+  letter-spacing: 0.05em;
+}
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+  list-style: none;
+}
+.nav-links a {
+  font-size: 13px;
+  color: var(--ink-muted);
+  text-decoration: none;
+  letter-spacing: 0.03em;
+  transition: color var(--transition);
+}
+.nav-links a:hover { color: var(--ink); }
+
+/* ─── HERO ─── */
+.hero {
+  padding: 120px 0 80px;
+  text-align: center;
+  position: relative;
+}
+.hero-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.2s forwards;
+}
+.hero-title {
+  font-family: var(--serif);
+  font-size: clamp(28px, 6vw, 44px);
+  line-height: 1.4;
+  color: var(--ink);
+  margin-bottom: 1.5rem;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.4s forwards;
+}
+.hero-title em {
+  font-style: italic;
+  color: var(--gold);
+}
+.hero-sub {
+  font-size: 15px;
+  line-height: 1.9;
+  color: var(--ink-soft);
+  max-width: 440px;
+  margin: 0 auto 3rem;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.6s forwards;
+}
+.hero-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.8s forwards;
+}
+.btn {
+  display: inline-block;
+  padding: 14px 32px;
+  font-family: var(--sans);
+  font-size: 14px;
+  letter-spacing: 0.05em;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all var(--transition);
+  border: none;
+  text-decoration: none;
+}
+.btn-primary {
+  background: var(--ink);
+  color: var(--paper);
+  width: 280px;
+}
+.btn-primary:hover {
+  background: var(--ink-soft);
+  transform: translateY(-1px);
+}
+.btn-secondary {
+  background: transparent;
+  color: var(--ink-soft);
+  border: 1px solid var(--ink-faint);
+  width: 280px;
+}
+.btn-secondary:hover {
+  border-color: var(--ink-muted);
+  color: var(--ink);
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--teal);
+  border: 1px solid rgba(45,107,107,0.3);
+  width: 280px;
+}
+.btn-ghost:hover {
+  background: rgba(45,107,107,0.06);
+}
+
+/* ─── DIVIDER ─── */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 4rem 0;
+  opacity: 0.4;
+}
+.divider::before, .divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--ink-faint);
+}
+.divider-symbol {
+  font-family: var(--serif);
+  font-size: 18px;
+  color: var(--gold);
+}
+
+/* ─── SCREENS ─── */
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* ─── QUESTION FLOW ─── */
+.question-wrapper {
+  background: var(--paper-warm);
+  border: 1px solid var(--paper-deep);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem;
+  margin: 2rem 0;
+}
+.q-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+.q-counter {
+  font-size: 12px;
+  color: var(--ink-muted);
+  letter-spacing: 0.08em;
+}
+.q-category {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: var(--paper-deep);
+  color: var(--ink-muted);
+}
+.progress-track {
+  height: 2px;
+  background: var(--paper-deep);
+  border-radius: 2px;
+  margin-bottom: 2.5rem;
+  overflow: hidden;
+}
+.progress-bar {
+  height: 100%;
+  background: var(--gold);
+  border-radius: 2px;
+  transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+}
+.q-text {
+  font-family: var(--serif);
+  font-size: 20px;
+  line-height: 1.7;
+  color: var(--ink);
+  margin-bottom: 0.75rem;
+}
+.q-hint {
+  font-size: 13px;
+  color: var(--ink-muted);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+.q-textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 1rem;
+  background: var(--paper);
+  border: 1px solid var(--paper-deep);
+  border-radius: var(--radius);
+  font-family: var(--sans);
+  font-size: 15px;
+  color: var(--ink);
+  line-height: 1.7;
+  resize: none;
+  transition: border-color var(--transition);
+  outline: none;
+}
+.q-textarea:focus { border-color: var(--gold-light); }
+.q-textarea::placeholder { color: var(--ink-faint); }
+.q-nav {
+  display: flex;
+  gap: 12px;
+  margin-top: 1.25rem;
+}
+.btn-back {
+  padding: 11px 20px;
+  background: transparent;
+  border: 1px solid var(--paper-deep);
+  border-radius: 2px;
+  font-size: 13px;
+  color: var(--ink-muted);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.btn-back:hover { border-color: var(--ink-muted); color: var(--ink); }
+.btn-next {
+  flex: 1;
+  padding: 12px;
+  background: var(--ink);
+  color: var(--paper);
+  border: none;
+  border-radius: 2px;
+  font-family: var(--sans);
+  font-size: 14px;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.btn-next:hover { background: var(--ink-soft); }
+
+/* ─── LETTER ─── */
+.letter-container {
+  margin: 2rem 0;
+}
+.letter-from {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+.letter-from-label {
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  color: var(--gold);
+  text-transform: uppercase;
+}
+.letter-paper {
+  background: #faf7f2;
+  border: 1px solid var(--paper-deep);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem;
+  position: relative;
+  box-shadow: 0 2px 20px rgba(26,23,20,0.06), 0 20px 40px rgba(26,23,20,0.04);
+}
+.letter-paper::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-lg);
+  background: repeating-linear-gradient(
+    transparent,
+    transparent 31px,
+    rgba(184,146,42,0.08) 32px
+  );
+  pointer-events: none;
+}
+.letter-body {
+  font-family: var(--serif);
+  font-size: 16px;
+  line-height: 2;
+  color: var(--ink);
+  white-space: pre-wrap;
+  position: relative;
+  z-index: 1;
+}
+.letter-loading {
+  text-align: center;
+  padding: 2rem;
+  font-family: var(--serif);
+  font-size: 15px;
+  color: var(--ink-muted);
+}
+.loading-dots::after {
+  content: '';
+  animation: loadingDots 1.5s infinite;
+}
+@keyframes loadingDots {
+  0% { content: ''; }
+  33% { content: '・'; }
+  66% { content: '・・'; }
+  100% { content: '・・・'; }
+}
+
+/* ─── ANSWERS RECAP ─── */
+.answers-recap {
+  margin: 2rem 0;
+}
+.recap-title {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: var(--ink-muted);
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+}
+.recap-item {
+  border-left: 2px solid var(--paper-deep);
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.75rem;
+  transition: border-color var(--transition);
+}
+.recap-item:hover { border-color: var(--gold-light); }
+.recap-q {
+  font-size: 12px;
+  color: var(--ink-muted);
+  margin-bottom: 0.25rem;
+}
+.recap-a {
+  font-size: 14px;
+  color: var(--ink-soft);
+  line-height: 1.6;
+}
+
+/* ─── STATS SCREEN ─── */
+.stats-input-section {
+  background: var(--paper-warm);
+  border: 1px solid var(--paper-deep);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  margin: 2rem 0;
+  text-align: center;
+}
+.stats-input-label {
+  font-family: var(--serif);
+  font-size: 20px;
+  color: var(--ink);
+  margin-bottom: 1.5rem;
+}
+.age-input {
+  width: 120px;
+  padding: 12px;
+  font-size: 28px;
+  font-family: var(--serif);
+  text-align: center;
+  background: var(--paper);
+  border: 1px solid var(--paper-deep);
+  border-radius: var(--radius);
+  color: var(--ink);
+  outline: none;
+  transition: border-color var(--transition);
+}
+.age-input:focus { border-color: var(--gold-light); }
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 1.5rem 0;
+}
+.stat-card {
+  background: var(--paper-warm);
+  border: 1px solid var(--paper-deep);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  text-align: center;
+}
+.stat-num {
+  font-family: var(--serif);
+  font-size: 28px;
+  color: var(--ink);
+  display: block;
+  margin-bottom: 0.25rem;
+}
+.stat-label {
+  font-size: 12px;
+  color: var(--ink-muted);
+  line-height: 1.5;
+}
+
+/* ─── TIMECAPSULE ─── */
+.capsule-wrapper {
+  background: var(--paper-warm);
+  border: 1px solid var(--paper-deep);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem;
+  margin: 2rem 0;
+}
+.capsule-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+.capsule-icon {
+  font-size: 40px;
+  margin-bottom: 0.75rem;
+}
+.capsule-title {
+  font-family: var(--serif);
+  font-size: 22px;
+  color: var(--ink);
+  margin-bottom: 0.5rem;
+}
+.capsule-sub {
+  font-size: 14px;
+  color: var(--ink-muted);
+  line-height: 1.6;
+}
+.form-field {
+  margin-bottom: 1.5rem;
+}
+.form-label {
+  display: block;
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.03em;
+}
+.form-input {
+  width: 100%;
+  padding: 11px 14px;
+  background: var(--paper);
+  border: 1px solid var(--paper-deep);
+  border-radius: var(--radius);
+  font-family: var(--sans);
+  font-size: 15px;
+  color: var(--ink);
+  outline: none;
+  transition: border-color var(--transition);
+}
+.form-input:focus { border-color: var(--gold-light); }
+.form-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238a8480' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  cursor: pointer;
+}
+.form-textarea {
+  min-height: 140px;
+  resize: none;
+  line-height: 1.7;
+}
+.capsule-saved {
+  display: none;
+  text-align: center;
+  padding: 2rem;
+}
+.capsule-saved-icon { font-size: 48px; margin-bottom: 1rem; }
+.capsule-saved-title {
+  font-family: var(--serif);
+  font-size: 20px;
+  color: var(--ink);
+  margin-bottom: 0.5rem;
+}
+.capsule-saved-sub {
+  font-size: 14px;
+  color: var(--ink-muted);
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+}
+.capsule-saved-date {
+  display: inline-block;
+  padding: 8px 20px;
+  background: var(--paper-deep);
+  border-radius: 20px;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+/* ─── CAPSULE LIST ─── */
+.capsule-list { margin: 1.5rem 0; }
+.capsule-item {
+  background: var(--paper);
+  border: 1px solid var(--paper-deep);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: all var(--transition);
+  position: relative;
+}
+.capsule-item:hover {
+  border-color: var(--gold-light);
+  transform: translateY(-1px);
+}
+.capsule-item-locked {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.capsule-lock-icon { font-size: 20px; }
+.capsule-item-info { flex: 1; }
+.capsule-item-date {
+  font-size: 12px;
+  color: var(--gold);
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
+}
+.capsule-item-title {
+  font-family: var(--serif);
+  font-size: 16px;
+  color: var(--ink);
+}
+.capsule-item-sub {
+  font-size: 12px;
+  color: var(--ink-muted);
+  margin-top: 0.2rem;
+}
+.capsule-badge {
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+.badge-locked {
+  background: var(--paper-deep);
+  color: var(--ink-muted);
+}
+.badge-open {
+  background: rgba(45,107,107,0.1);
+  color: var(--teal);
+}
+
+/* ─── OPEN LETTER ─── */
+.open-letter-wrapper {
+  background: var(--paper-warm);
+  border: 1px solid var(--paper-deep);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  margin: 1rem 0;
+}
+.open-letter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}
+.open-letter-from {
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+.open-letter-date {
+  font-size: 12px;
+  color: var(--gold);
+}
+.open-letter-text {
+  font-family: var(--serif);
+  font-size: 16px;
+  line-height: 2;
+  color: var(--ink);
+  white-space: pre-wrap;
+  border-top: 1px solid var(--paper-deep);
+  padding-top: 1.25rem;
+}
+
+/* ─── SECTION HEADERS ─── */
+.section-header {
+  padding: 80px 0 0;
+  text-align: center;
+}
+.section-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+.section-title {
+  font-family: var(--serif);
+  font-size: 28px;
+  color: var(--ink);
+  margin-bottom: 0.75rem;
+}
+.section-sub {
+  font-size: 15px;
+  color: var(--ink-soft);
+  line-height: 1.7;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+/* ─── FOOTER ─── */
+footer {
+  margin-top: 6rem;
+  padding: 3rem 0;
+  border-top: 1px solid var(--paper-deep);
+  text-align: center;
+}
+.footer-quote {
+  font-family: var(--serif);
+  font-size: 17px;
+  color: var(--ink-soft);
+  font-style: italic;
+  margin-bottom: 1rem;
+  line-height: 1.7;
+}
+.footer-sub {
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-in {
+  opacity: 0;
+  animation: fadeUp 0.6s forwards;
+}
+
+/* ─── TOASTS ─── */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--ink);
+  color: var(--paper);
+  padding: 12px 24px;
+  border-radius: 2px;
+  font-size: 14px;
+  transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+  z-index: 1000;
+  white-space: nowrap;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 480px) {
+  .question-wrapper, .capsule-wrapper { padding: 1.5rem; }
+  .letter-paper { padding: 1.5rem; }
+  .stats-grid { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">もしも、死んだとしたら</div>
+    <ul class="nav-links">
+      <li><a href="#letter-section">手紙を読む</a></li>
+      <li><a href="#stats-section">残り時間</a></li>
+      <li><a href="#capsule-section">タイムカプセル</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <!-- ═══ HERO ═══ -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-eyebrow">a gentle confrontation with mortality</div>
+      <h1 class="hero-title">
+        死を想像することで、<br>
+        <em>今が輝きはじめる</em>
+      </h1>
+      <p class="hero-sub">
+        ここは、死という「終わり」をそっと想像する場所。<br>
+        死後の自分からの手紙、残りの時間、未来の自分への言葉——<br>
+        それらが、あなたの「生きたい」を呼び覚ますかもしれない。
+      </p>
+      <div class="hero-actions">
+        <button class="btn btn-primary" onclick="scrollTo('#letter-section')">死後の自分からの手紙を読む</button>
+        <button class="btn btn-secondary" onclick="scrollTo('#stats-section')">残り時間を知る</button>
+        <button class="btn btn-ghost" onclick="scrollTo('#capsule-section')">タイムカプセルを作る</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ LETTER SECTION ═══ -->
+  <section id="letter-section">
+    <div class="container">
+      <div class="divider"><span class="divider-symbol">✦</span></div>
+      <div class="section-header">
+        <div class="section-eyebrow">letter from the other side</div>
+        <h2 class="section-title">死後の自分からの手紙</h2>
+        <p class="section-sub">いくつかの質問に答えると、死後の自分があなたへの手紙を書きます。</p>
+      </div>
+
+      <!-- 質問フロー -->
+      <div id="q-screen" class="screen active" style="margin-top: 2rem;">
+        <div class="question-wrapper">
+          <div class="q-meta">
+            <span class="q-counter" id="q-counter">1 / 10</span>
+            <span class="q-category" id="q-category">あなたについて</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-bar" id="progress-bar" style="width: 10%;"></div>
+          </div>
+          <div class="q-text" id="q-text"></div>
+          <div class="q-hint" id="q-hint"></div>
+          <textarea class="q-textarea" id="q-textarea" placeholder="思ったことをそのままどうぞ"></textarea>
+          <div class="q-nav">
+            <button class="btn-back" onclick="prevQuestion()">← 戻る</button>
+            <button class="btn-next" onclick="nextQuestion()" id="q-btn-next">次へ</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 手紙表示 -->
+      <div id="letter-screen" class="screen">
+        <div class="letter-container">
+          <div class="letter-from">
+            <div class="letter-from-label">✦ あなたへ、死後の自分より ✦</div>
+          </div>
+          <div class="letter-paper">
+            <div class="letter-body" id="letter-body">
+              <div class="letter-loading">手紙を書いています<span class="loading-dots"></span></div>
+            </div>
+          </div>
+          <div class="answers-recap" id="answers-recap"></div>
+          <div style="display:flex; gap:12px; margin-top:1.5rem; flex-wrap:wrap;">
+            <button class="btn btn-primary" style="flex:1; min-width:200px;" onclick="restartQuestions()">もう一度読む</button>
+            <button class="btn btn-ghost" style="flex:1; min-width:200px;" onclick="scrollTo('#capsule-section')">タイムカプセルに残す</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ STATS SECTION ═══ -->
+  <section id="stats-section">
+    <div class="container">
+      <div class="divider"><span class="divider-symbol">✦</span></div>
+      <div class="section-header">
+        <div class="section-eyebrow">time remaining</div>
+        <h2 class="section-title">あなたの残り時間</h2>
+        <p class="section-sub">平均寿命をもとに、今のあなたに残された時間を可視化します。</p>
+      </div>
+
+      <div id="stats-input" class="stats-input-section" style="margin-top: 2rem;">
+        <div class="stats-input-label">今、何歳ですか？</div>
+        <input type="number" class="age-input" id="age-input" placeholder="28" min="1" max="110">
+        <div style="margin-top:1.5rem;">
+          <button class="btn btn-primary" onclick="calcStats()" style="width:200px;">計算する</button>
+        </div>
+      </div>
+
+      <div id="stats-result" style="display:none; margin-top: 1.5rem;">
+        <div class="stats-grid" id="stats-grid"></div>
+        <div class="letter-paper" style="margin-top:1rem;">
+          <div class="letter-body" id="stats-message">
+            <div class="letter-loading">言葉を探しています<span class="loading-dots"></span></div>
+          </div>
+        </div>
+        <div style="margin-top:1.5rem; text-align:center;">
+          <button class="btn btn-secondary" onclick="resetStats()" style="width:200px;">別の年齢で試す</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ TIMECAPSULE SECTION ═══ -->
+  <section id="capsule-section">
+    <div class="container">
+      <div class="divider"><span class="divider-symbol">✦</span></div>
+      <div class="section-header">
+        <div class="section-eyebrow">time capsule</div>
+        <h2 class="section-title">タイムカプセル</h2>
+        <p class="section-sub">未来の自分への手紙を書いて、設定した日付になったら読み返せます。</p>
+      </div>
+
+      <!-- 新規作成 -->
+      <div id="capsule-form" class="capsule-wrapper" style="margin-top: 2rem;">
+        <div class="capsule-header">
+          <div class="capsule-icon">🕰️</div>
+          <div class="capsule-title">未来の自分へ手紙を書く</div>
+          <div class="capsule-sub">書いた手紙は、あなたのブラウザに保存されます。<br>設定した日付になったら開封できるようになります。</div>
+        </div>
+        <div id="capsule-form-inner">
+          <div class="form-field">
+            <label class="form-label">件名（手紙のテーマ）</label>
+            <input type="text" class="form-input" id="cap-title" placeholder="例：30歳の自分へ、夢を追いかけている頃に">
+          </div>
+          <div class="form-field">
+            <label class="form-label">開封する日付</label>
+            <input type="date" class="form-input" id="cap-date">
+          </div>
+          <div class="form-field">
+            <label class="form-label">今の自分の状況・気持ち</label>
+            <textarea class="form-input form-textarea" id="cap-now" placeholder="今どんな状況にいますか？仕事、人間関係、悩み、嬉しいことなど…"></textarea>
+          </div>
+          <div class="form-field">
+            <label class="form-label">未来の自分への言葉</label>
+            <textarea class="form-input form-textarea" id="cap-letter" placeholder="未来の自分へ伝えたいこと、聞いてみたいこと、願いごとなど…"></textarea>
+          </div>
+          <div class="form-field">
+            <label class="form-label">今の自分への約束（任意）</label>
+            <input type="text" class="form-input" id="cap-promise" placeholder="例：毎日5分でも、好きなことに時間を使う">
+          </div>
+          <button class="btn btn-primary" style="width:100%;" onclick="saveCapsule()">タイムカプセルを封印する 🔒</button>
+        </div>
+        <div class="capsule-saved" id="capsule-saved">
+          <div class="capsule-saved-icon">📮</div>
+          <div class="capsule-saved-title">封印されました</div>
+          <div class="capsule-saved-sub">手紙はあなたのブラウザに保存されました。<br>設定した日になったら開封できます。</div>
+          <div class="capsule-saved-date" id="saved-date-display"></div>
+          <div style="margin-top:1.5rem;">
+            <button class="btn btn-secondary" onclick="newCapsule()" style="width:200px;">もう一通書く</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- カプセル一覧 -->
+      <div id="capsule-list-section" style="margin: 2rem 0;">
+        <div class="recap-title">保存されたタイムカプセル</div>
+        <div id="capsule-list"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- OPEN LETTER MODAL (full section) -->
+<div id="open-letter-section" style="display:none; position:fixed; inset:0; background:rgba(26,23,20,0.7); z-index:200; overflow-y:auto; padding:2rem;">
+  <div style="max-width:600px; margin:2rem auto;">
+    <button onclick="closeOpenLetter()" style="background:transparent; border:none; color:var(--paper); font-size:14px; cursor:pointer; margin-bottom:1rem; display:flex; align-items:center; gap:6px;">← 閉じる</button>
+    <div class="open-letter-wrapper">
+      <div class="open-letter-header">
+        <div>
+          <div class="open-letter-from" id="ol-from">過去の自分より</div>
+          <div style="font-family:var(--serif); font-size:20px; color:var(--ink); margin-top:0.25rem;" id="ol-title"></div>
+        </div>
+        <div class="open-letter-date" id="ol-date"></div>
+      </div>
+      <div class="open-letter-text" id="ol-body"></div>
+      <div style="margin-top:1.5rem; padding-top:1rem; border-top:1px solid var(--paper-deep);">
+        <div style="font-size:12px; color:var(--ink-muted); margin-bottom:0.5rem;">あの頃の約束</div>
+        <div style="font-family:var(--serif); font-size:15px; color:var(--ink-soft); font-style:italic;" id="ol-promise"></div>
+      </div>
+    </div>
+    <div style="text-align:center; margin-top:1rem;">
+      <button class="btn btn-primary" onclick="deleteCapsule()" style="background:var(--red); width:200px; margin-top:0.5rem;">手紙を燃やす 🔥</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="footer-quote">「死を想うことは、生を愛することを学ぶことだ。」</div>
+    <div class="footer-sub">memento mori — 死を忘れるな</div>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── UTILITIES ───
+function scrollTo(selector) {
+  const el = document.querySelector(selector);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  setTimeout(() => { window.scrollBy(0, -70); }, 400);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ─── QUESTIONS ───
+const questions = [
+  { text: "今、あなたが一番大切にしていることは何ですか？", hint: "人、もの、習慣、価値観——なんでも", category: "あなたについて" },
+  { text: "最近、心から笑った瞬間はいつですか？", hint: "どんな些細なことでも思い出してみてください", category: "日々の喜び" },
+  { text: "幼い頃に夢中だったことは何ですか？", hint: "忘れかけていた記憶でも", category: "あなたのルーツ" },
+  { text: "今、密かに後悔していることはありますか？", hint: "小さなことで構いません", category: "正直な気持ち" },
+  { text: "時間もお金も制限がなかったら、明日何をしたいですか？", hint: "制限ゼロで想像してみて", category: "本当の望み" },
+  { text: "あなたの人生に登場する、大切な人を一人思い浮かべてください。その人にまだ伝えられていないことはありますか？", hint: "感謝、謝罪、愛情——何でも", category: "大切な人" },
+  { text: "自分の中で「これだけは譲れない」と思う価値観や信念はありますか？", hint: "あなたの芯にあるもの", category: "あなたの軸" },
+  { text: "最近、自分をないがしろにしていると感じることはありますか？", hint: "睡眠、食事、休息、感情……", category: "自分への優しさ" },
+  { text: "もし今日が人生最後の日だとしたら、何をしますか？", hint: "正直に。見栄を張らなくていいです", category: "もしもの日" },
+  { text: "死後の自分が今のあなたに一番伝えたいのは、どんなことだと思いますか？", hint: "直感で答えてみてください", category: "あなた自身から" },
+];
+
+let currentQ = 0;
+let answers = Array(questions.length).fill('');
+
+function renderQuestion() {
+  const q = questions[currentQ];
+  document.getElementById('q-counter').textContent = `${currentQ + 1} / ${questions.length}`;
+  document.getElementById('q-category').textContent = q.category;
+  document.getElementById('q-text').textContent = q.text;
+  document.getElementById('q-hint').textContent = q.hint;
+  document.getElementById('q-textarea').value = answers[currentQ];
+  document.getElementById('progress-bar').style.width = `${((currentQ + 1) / questions.length) * 100}%`;
+  const isLast = currentQ === questions.length - 1;
+  document.getElementById('q-btn-next').textContent = isLast ? '手紙を受け取る ✦' : '次へ';
+}
+
+function nextQuestion() {
+  answers[currentQ] = document.getElementById('q-textarea').value.trim();
+  if (currentQ < questions.length - 1) {
+    currentQ++;
+    renderQuestion();
+  } else {
+    generateLetter();
+  }
+}
+
+function prevQuestion() {
+  answers[currentQ] = document.getElementById('q-textarea').value.trim();
+  if (currentQ > 0) {
+    currentQ--;
+    renderQuestion();
+  }
+}
+
+function restartQuestions() {
+  currentQ = 0;
+  answers = Array(questions.length).fill('');
+  document.getElementById('q-screen').classList.add('active');
+  document.getElementById('letter-screen').classList.remove('active');
+  renderQuestion();
+  scrollTo('#letter-section');
+}
+
+async function generateLetter() {
+  document.getElementById('q-screen').classList.remove('active');
+  document.getElementById('letter-screen').classList.add('active');
+  document.getElementById('letter-body').innerHTML = '<div class="letter-loading">手紙を書いています<span class="loading-dots"></span></div>';
+  document.getElementById('answers-recap').innerHTML = '';
+
+  const qa = questions.map((q, i) => `Q: ${q.text}\nA: ${answers[i] || '（回答なし）'}`).join('\n\n');
+
+  const prompt = `あなたは「死後の世界から今の自分自身へ手紙を書く」という体験の代筆者です。
+
+ユーザーが答えた質問と回答：
+${qa}
+
+この情報をもとに、「死後の自分から今の自分への手紙」を日本語で書いてください。
+
+手紙の条件：
+- 「あなたへ」で書き始める
+- 死後の自分として、穏やかで温かみのある語り口
+- 回答内容を具体的に織り込む（特に大切な人、夢、後悔について）
+- 生きることへの肯定感が自然ににじみ出るように
+- 説教くさくならず、あくまで優しく
+- 550〜650文字程度
+- 手紙の文章のみ返してください`;
+
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        messages: [{ role: "user", content: prompt }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.map(c => c.text || '').join('') || '手紙を生成できませんでした。';
+    document.getElementById('letter-body').textContent = text;
+
+    // answers recap
+    const recap = document.getElementById('answers-recap');
+    recap.innerHTML = `<div class="recap-title" style="margin-top:2rem;">あなたが書いてくれたこと</div>` +
+      questions.map((q, i) => answers[i] ? `
+        <div class="recap-item">
+          <div class="recap-q">${q.text}</div>
+          <div class="recap-a">${answers[i]}</div>
+        </div>` : '').join('');
+  } catch (e) {
+    document.getElementById('letter-body').textContent = '接続エラーが発生しました。もう一度お試しください。';
+  }
+  scrollTo('#letter-section');
+}
+
+// ─── STATS ───
+function calcStats() {
+  const age = parseInt(document.getElementById('age-input').value);
+  if (!age || age < 1 || age > 110) { showToast('正しい年齢を入力してください'); return; }
+
+  const avgLife = 84;
+  const rem = Math.max(0, avgLife - age);
+  const days = Math.round(rem * 365);
+  const meals = Math.round(rem * 365 * 3);
+  const sleepYears = Math.round(rem / 3);
+  const summers = rem;
+  const sunrises = days;
+
+  document.getElementById('stats-input').style.display = 'none';
+  document.getElementById('stats-result').style.display = 'block';
+
+  document.getElementById('stats-grid').innerHTML = `
+    <div class="stat-card"><span class="stat-num">${rem}</span><div class="stat-label">残りの年数（概算）</div></div>
+    <div class="stat-card"><span class="stat-num">${days.toLocaleString()}</span><div class="stat-label">残りの日数</div></div>
+    <div class="stat-card"><span class="stat-num">${sleepYears}</span><div class="stat-label">眠って過ごす年数</div></div>
+    <div class="stat-card"><span class="stat-num">${meals.toLocaleString()}</span><div class="stat-label">食べられる食事の数</div></div>
+    <div class="stat-card"><span class="stat-num">${summers}</span><div class="stat-label">迎えられる夏の数</div></div>
+    <div class="stat-card"><span class="stat-num">${sunrises.toLocaleString()}</span><div class="stat-label">見られる朝日の数</div></div>
+  `;
+
+  generateStatsMessage(age, rem, days);
+}
+
+async function generateStatsMessage(age, rem, days) {
+  document.getElementById('stats-message').innerHTML = '<div class="letter-loading">言葉を探しています<span class="loading-dots"></span></div>';
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 500,
+        messages: [{ role: "user", content: `${age}歳の人が、平均寿命から計算した残り時間（約${rem}年、${days.toLocaleString()}日）を知りました。数字という形で「有限」を目にした人に向けて、詩的で温かい言葉を日本語で書いてください。押しつけがましくなく、ただそっと背中を押すような200〜240文字の文章で。` }]
+      })
+    });
+    const data = await res.json();
+    document.getElementById('stats-message').textContent = data.content?.map(c => c.text || '').join('') || '';
+  } catch (e) {
+    document.getElementById('stats-message').textContent = '';
+  }
+}
+
+function resetStats() {
+  document.getElementById('stats-input').style.display = 'block';
+  document.getElementById('stats-result').style.display = 'none';
+  document.getElementById('age-input').value = '';
+}
+
+// ─── TIMECAPSULE ───
+function getCapsules() {
+  try { return JSON.parse(localStorage.getItem('timecapsules') || '[]'); } catch { return []; }
+}
+function saveCapsules(caps) {
+  localStorage.setItem('timecapsules', JSON.stringify(caps));
+}
+
+function setMinDate() {
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  document.getElementById('cap-date').min = tomorrow.toISOString().split('T')[0];
+  const oneYear = new Date();
+  oneYear.setFullYear(oneYear.getFullYear() + 1);
+  document.getElementById('cap-date').value = oneYear.toISOString().split('T')[0];
+}
+
+function saveCapsule() {
+  const title = document.getElementById('cap-title').value.trim();
+  const date = document.getElementById('cap-date').value;
+  const now = document.getElementById('cap-now').value.trim();
+  const letter = document.getElementById('cap-letter').value.trim();
+  const promise = document.getElementById('cap-promise').value.trim();
+
+  if (!title || !date || !letter) { showToast('件名・日付・手紙の内容を入力してください'); return; }
+
+  const caps = getCapsules();
+  const cap = { id: Date.now().toString(), title, openDate: date, now, letter, promise, createdAt: new Date().toLocaleDateString('ja-JP') };
+  caps.push(cap);
+  saveCapsules(caps);
+
+  document.getElementById('capsule-form-inner').style.display = 'none';
+  const saved = document.getElementById('capsule-saved');
+  saved.style.display = 'block';
+  document.getElementById('saved-date-display').textContent = `開封日: ${new Date(date).toLocaleDateString('ja-JP', { year:'numeric', month:'long', day:'numeric' })}`;
+  renderCapsuleList();
+  showToast('タイムカプセルを封印しました 🔒');
+}
+
+function newCapsule() {
+  document.getElementById('cap-title').value = '';
+  document.getElementById('cap-now').value = '';
+  document.getElementById('cap-letter').value = '';
+  document.getElementById('cap-promise').value = '';
+  document.getElementById('capsule-form-inner').style.display = 'block';
+  document.getElementById('capsule-saved').style.display = 'none';
+  setMinDate();
+}
+
+let openCapsuleId = null;
+
+function renderCapsuleList() {
+  const caps = getCapsules();
+  const container = document.getElementById('capsule-list');
+  if (caps.length === 0) {
+    container.innerHTML = '<div style="text-align:center; padding:2rem; color:var(--ink-muted); font-size:14px;">まだタイムカプセルはありません</div>';
+    return;
+  }
+  const today = new Date(); today.setHours(0,0,0,0);
+  container.innerHTML = caps.slice().reverse().map(cap => {
+    const openDate = new Date(cap.openDate); openDate.setHours(0,0,0,0);
+    const canOpen = today >= openDate;
+    const dateStr = openDate.toLocaleDateString('ja-JP', { year:'numeric', month:'long', day:'numeric' });
+    return `
+      <div class="capsule-item" onclick="${canOpen ? `openCapsule('${cap.id}')` : `showToast('${dateStr}になったら開封できます')`}">
+        <div class="capsule-item-locked">
+          <div class="capsule-lock-icon">${canOpen ? '📬' : '🔒'}</div>
+          <div class="capsule-item-info">
+            <div class="capsule-item-date">${canOpen ? '開封できます — ' : '開封日: '}${dateStr}</div>
+            <div class="capsule-item-title">${cap.title}</div>
+            <div class="capsule-item-sub">作成日: ${cap.createdAt}</div>
+          </div>
+          <span class="capsule-badge ${canOpen ? 'badge-open' : 'badge-locked'}">${canOpen ? '開封可' : '封印中'}</span>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function openCapsule(id) {
+  const caps = getCapsules();
+  const cap = caps.find(c => c.id === id);
+  if (!cap) return;
+  openCapsuleId = id;
+
+  document.getElementById('ol-title').textContent = cap.title;
+  document.getElementById('ol-date').textContent = `作成日: ${cap.createdAt}`;
+  document.getElementById('ol-from').textContent = `${cap.createdAt}の自分より`;
+
+  let body = '';
+  if (cap.now) body += `【あの頃の状況】\n${cap.now}\n\n`;
+  body += `【未来の自分へ】\n${cap.letter}`;
+  document.getElementById('ol-body').textContent = body;
+  document.getElementById('ol-promise').textContent = cap.promise || '（約束はなし）';
+  document.getElementById('open-letter-section').style.display = 'block';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeOpenLetter() {
+  document.getElementById('open-letter-section').style.display = 'none';
+  document.body.style.overflow = '';
+  openCapsuleId = null;
+}
+
+function deleteCapsule() {
+  if (!openCapsuleId) return;
+  if (!confirm('この手紙を削除しますか？元に戻せません。')) return;
+  const caps = getCapsules().filter(c => c.id !== openCapsuleId);
+  saveCapsules(caps);
+  closeOpenLetter();
+  renderCapsuleList();
+  showToast('手紙を燃やしました');
+}
+
+// ─── INIT ───
+renderQuestion();
+setMinDate();
+renderCapsuleList();
+</script>
+</body>
+</html>
